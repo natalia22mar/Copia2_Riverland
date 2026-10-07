@@ -84,31 +84,47 @@
 
   <dialog id="entradas" class="modal" aria-labelledby="entradas-t">
     <h2 id="entradas-t">Entradas</h2>
-    <p class="note">Precios de ejemplo para el proyecto: sustitúyelos por los reales (atributo data-price).</p>
-    <div class="grid-3">
+    <p class="note">Compra de demostración: no se realizará ningún cargo ni se pedirán datos de tarjeta.</p>
+    <div id="ticket-catalog" class="grid-3">
       <article class="price-card">
         <h3>Día suelto</h3><p class="price">35 €</p>
         <ul><li>Un día a elegir</li><li>Los 3 escenarios</li></ul>
-        <button class="btn buy" type="button" data-ticket="Día suelto" data-price="35">Elegir</button>
+        <button class="btn buy" type="button" data-ticket="Día suelto" data-price="35">Añadir al carrito</button>
       </article>
       <article class="price-card featured">
         <h3>Abono 3 días</h3><p class="price">80 €</p>
         <ul><li>Viernes, sábado y domingo</li><li>Los 3 escenarios</li></ul>
-        <button class="btn buy" type="button" data-ticket="Abono 3 días" data-price="80">Elegir</button>
+        <button class="btn buy" type="button" data-ticket="Abono 3 días" data-price="80">Añadir al carrito</button>
       </article>
       <article class="price-card">
         <h3>Abono + camping</h3><p class="price">105 €</p>
         <ul><li>Abono de 3 días</li><li>Zona de acampada</li></ul>
-        <button class="btn buy" type="button" data-ticket="Abono + camping" data-price="105">Elegir</button>
+        <button class="btn buy" type="button" data-ticket="Abono + camping" data-price="105">Añadir al carrito</button>
       </article>
     </div>
-    <div id="resumen" class="resumen" hidden>
-      <p id="resumen-tipo"></p>
-      <label for="cantidad">Cantidad</label>
-      <input id="cantidad" type="number" min="1" max="10" value="1">
-      <p class="total">Total: <strong id="resumen-total"></strong></p>
-      <a class="btn" href="https://www.riverlandfest.com/" target="_blank" rel="noopener">Ir a la web oficial</a>
-    </div>
+    <section id="ticket-cart" class="ticket-cart" aria-live="polite" hidden>
+      <h3>Tu carrito</h3>
+      <ul id="ticket-cart-items" class="cart-items"></ul>
+      <p class="total">Total: <strong id="ticket-cart-total">0 €</strong></p>
+      <button id="checkout-start" class="btn" type="button">Continuar con la compra</button>
+    </section>
+    <form id="ticket-checkout" class="form checkout" hidden>
+      <h3>Datos del comprador</h3>
+      <div class="field"><label for="buyer-name">Nombre completo</label><input id="buyer-name" name="buyerName" type="text" autocomplete="name" minlength="2" required></div>
+      <div class="field"><label for="buyer-email">Email</label><input id="buyer-email" name="buyerEmail" type="email" autocomplete="email" required></div>
+      <p class="note">Pago ficticio para esta demostración. No introduzcas ni se solicitarán datos bancarios; tus datos no se guardan ni se envían.</p>
+      <div class="checkout-actions">
+        <button class="btn" type="submit">Confirmar pago ficticio</button>
+        <button id="checkout-back" class="btn btn-ghost" type="button">Volver al carrito</button>
+      </div>
+    </form>
+    <section id="purchase-confirmation" class="purchase-confirmation" aria-live="polite" hidden>
+      <h3 tabindex="-1">¡Pago recibido!</h3>
+      <p id="purchase-message"></p>
+      <p class="total">Total simulado: <strong id="purchase-total"></strong></p>
+      <p class="note">No se ha realizado ningún cargo ni se han enviado tus datos.</p>
+      <button id="new-purchase" class="btn" type="button">Nueva compra</button>
+    </section>
     <button class="btn btn-ghost" type="button" data-close>Cerrar</button>
   </dialog>
 

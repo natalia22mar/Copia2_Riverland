@@ -181,22 +181,122 @@ function initCamping() {
 
 /* Entradas: selección y total */
 function initEntradas() {
-  const resumen = document.getElementById("resumen");
-  const cantidad = document.getElementById("cantidad");
-  const total = document.getElementById("resumen-total");
-  let precio = 0;
-  const calcular = () => {
-    const n = Math.min(10, Math.max(1, parseInt(cantidad.value, 10) || 1));
-    total.textContent = (n * precio).toLocaleString("es-ES") + " €";
+  const catalog = document.getElementById("ticket-catalog");
+  const cartSection = document.getElementById("ticket-cart");
+  const cartItems = document.getElementById("ticket-cart-items");
+  const cartTotal = document.getElementById("ticket-cart-total");
+  const checkout = document.getElementById("ticket-checkout");
+  const confirmation = document.getElementById("purchase-confirmation");
+  const cart = new Map();
+
+  const formatPrice = amount => amount.toLocaleString("es-ES") + " €";
+  const renderCart = () => {
+    cartItems.replaceChildren();
+    let total = 0;
+
+    cart.forEach(item => {
+      total += item.price * item.quantity;
+      const row = document.createElement("li");
+      row.className = "cart-item";
+
+      const details = document.createElement("div");
+      details.className = "cart-item-details";
+      const name = document.createElement("strong");
+      name.textContent = item.name;
+      const unitPrice = document.createElement("span");
+      unitPrice.textContent = formatPrice(item.price) + " por entrada";
+      details.append(name, unitPrice);
+
+      const controls = document.createElement("div");
+      controls.className = "cart-item-controls";
+      const quantityLabel = document.createElement("label");
+      quantityLabel.textContent = "Cantidad";
+      const quantity = document.createElement("input");
+      quantity.type = "number";
+      quantity.min = "1";
+      quantity.max = "10";
+      quantity.value = String(item.quantity);
+      quantity.dataset.cartQuantity = item.name;
+      quantity.setAttribute("aria-label", "Cantidad de " + item.name);
+      quantityLabel.appendChild(quantity);
+
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "btn btn-ghost cart-remove";
+      remove.textContent = "Quitar";
+      remove.dataset.cartRemove = item.name;
+      remove.setAttribute("aria-label", "Quitar " + item.name + " del carrito");
+      controls.append(quantityLabel, remove);
+      row.append(details, controls);
+      cartItems.appendChild(row);
+    });
+
+    cartTotal.textContent = formatPrice(total);
+    cartSection.hidden = cart.size === 0;
+    document.getElementById("checkout-start").disabled = cart.size === 0;
+    return total;
   };
-  document.querySelectorAll(".buy").forEach(b => b.addEventListener("click", () => {
-    precio = Number(b.dataset.price);
-    document.getElementById("resumen-tipo").textContent = b.dataset.ticket + " · " + precio + " € por entrada";
-    cantidad.value = 1;
-    resumen.hidden = false;
-    calcular();
+
+  document.querySelectorAll(".buy").forEach(button => button.addEventListener("click", () => {
+    const name = button.dataset.ticket;
+    const item = cart.get(name) || { name, price: Number(button.dataset.price), quantity: 0 };
+    item.quantity = Math.min(10, item.quantity + 1);
+    cart.set(name, item);
+    renderCart();
   }));
-  cantidad.addEventListener("input", calcular);
+
+  cartItems.addEventListener("change", e => {
+    const input = e.target.closest("[data-cart-quantity]");
+    if (!input) return;
+    const item = cart.get(input.dataset.cartQuantity);
+    if (!item) return;
+    item.quantity = Math.min(10, Math.max(1, Number.parseInt(input.value, 10) || 1));
+    renderCart();
+  });
+
+  cartItems.addEventListener("click", e => {
+    const button = e.target.closest("[data-cart-remove]");
+    if (!button) return;
+    cart.delete(button.dataset.cartRemove);
+    renderCart();
+  });
+
+  document.getElementById("checkout-start").addEventListener("click", () => {
+    if (!cart.size) return;
+    catalog.hidden = true;
+    cartSection.hidden = true;
+    checkout.hidden = false;
+    checkout.querySelector("input").focus();
+  });
+
+  document.getElementById("checkout-back").addEventListener("click", () => {
+    checkout.hidden = true;
+    catalog.hidden = false;
+    cartSection.hidden = false;
+  });
+
+  checkout.addEventListener("submit", e => {
+    e.preventDefault();
+    if (!cart.size || !checkout.reportValidity()) return;
+
+    const buyerName = checkout.elements.buyerName.value.trim();
+    const total = [...cart.values()].reduce((sum, item) => sum + item.price * item.quantity, 0);
+    document.getElementById("purchase-message").textContent =
+      `¡Pago recibido, ${buyerName}! Bienvenido a Riverland; nos vemos allí.`;
+    document.getElementById("purchase-total").textContent = formatPrice(total);
+    checkout.reset();
+    catalog.hidden = true;
+    checkout.hidden = true;
+    confirmation.hidden = false;
+    confirmation.querySelector("h3").focus();
+  });
+
+  document.getElementById("new-purchase").addEventListener("click", () => {
+    cart.clear();
+    renderCart();
+    confirmation.hidden = true;
+    catalog.hidden = false;
+  });
 }
 
 /* Validación del formulario */
