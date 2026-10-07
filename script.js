@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initModales();
   initTabs();
   initEntradas();
+  initCamping();
   initForm();
   initHint();
   initCoords();
@@ -109,7 +110,11 @@ function initModales() {
     const abrir = e.target.closest("[data-open]");
     if (abrir) {
       document.querySelectorAll("dialog[open]").forEach(d => d.close());
-      document.getElementById(abrir.dataset.open).showModal();
+      const dialog = document.getElementById(abrir.dataset.open);
+      if (dialog.dataset.titleDefault) {
+        dialog.querySelector("h2").textContent = abrir.dataset.title || dialog.dataset.titleDefault;
+      }
+      dialog.showModal();
       return;
     }
     const cerrar = e.target.closest("[data-close]");
@@ -122,20 +127,27 @@ function initModales() {
 function initTabs() {
   const tabs = [...document.querySelectorAll(".tab")];
   const lista = document.getElementById("panel");
+  const crearArtista = (nombre, dia) => {
+    const li = document.createElement("li");
+    const boton = document.createElement("button");
+    boton.type = "button";
+    boton.className = "artist";
+    boton.textContent = nombre;
+    boton.dataset.dia = dia;
+    li.appendChild(boton);
+    return li;
+  };
   const pintar = dia => {
     lista.innerHTML = "";
     PROGRAMA[dia].forEach(nombre => {
-      const li = document.createElement("li");
-      const b = document.createElement("button");
-      b.type = "button";
-      b.className = "artist";
-      b.textContent = nombre;
-      b.dataset.dia = dia;
-      li.appendChild(b);
-      lista.appendChild(li);
+      lista.appendChild(crearArtista(nombre, dia));
     });
     lista.setAttribute("aria-labelledby", "tab-" + dia);
   };
+  document.querySelectorAll("[data-artists-day]").forEach(list => {
+    const dia = Number(list.dataset.artistsDay);
+    PROGRAMA[dia].forEach(nombre => list.appendChild(crearArtista(nombre, dia)));
+  });
   tabs.forEach(t => t.addEventListener("click", () => {
     tabs.forEach(o => {
       const activa = o === t;
@@ -145,7 +157,7 @@ function initTabs() {
     });
     pintar(Number(t.dataset.day));
   }));
-  lista.addEventListener("click", e => {
+  document.addEventListener("click", e => {
     const b = e.target.closest(".artist");
     if (!b) return;
     document.getElementById("artista-t").textContent = b.textContent;
@@ -154,6 +166,17 @@ function initTabs() {
     document.getElementById("artista").showModal(); // segunda modal sobre la de programa
   });
   pintar(0);
+}
+
+/* Reserva de camping de demostración, sin envío a un servidor */
+function initCamping() {
+  const form = document.getElementById("camping-form");
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const plazas = Number(form.elements.plazas.value);
+    document.getElementById("camping-status").textContent =
+      `Solicitud de ${plazas} ${plazas === 1 ? "plaza" : "plazas"} preparada. Esta demo no la envía ni confirma la reserva.`;
+  });
 }
 
 /* Entradas: selección y total */

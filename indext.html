@@ -33,11 +33,11 @@
       </div>
 
       <!-- ===== HOTSPOTS: --x e --y son el % de la imagen donde se colocan ===== -->
-      <button class="hotspot" type="button" data-open="info" aria-label="Info" style="--x:29.786%; --y:23.901%"><span class="dot"></span><span class="tag">Info</span></button>
-      <button class="hotspot" type="button" data-open="programa" aria-label="Programa" style="--x:55.777%; --y:23.815%"><span class="dot"></span><span class="tag">Programa</span></button>
-      <button class="hotspot" type="button" data-open="entradas" aria-label="Entradas" style="--x:67.147%; --y:44.941%"><span class="dot"></span><span class="tag">Entradas</span></button>
-      <button class="hotspot" type="button" data-open="patrocinadores" aria-label="Patrocinadores" style="--x:32.373%; --y:63.187%"><span class="dot"></span><span class="tag">Patrocinadores</span></button>
-      <button class="hotspot" type="button" data-open="contacto" aria-label="Contacto" style="--x:83.344%; --y:78.994%"><span class="dot"></span><span class="tag">Contacto</span></button>
+      <button class="hotspot" type="button" data-open="entradas" aria-label="Tickets" style="--x:29.786%; --y:23.901%"><span class="dot"></span><span class="tag">Tickets</span></button>
+      <button class="hotspot" type="button" data-open="info" aria-label="Info" style="--x:55.777%; --y:23.815%"><span class="dot"></span><span class="tag">Info</span></button>
+      <button class="hotspot" type="button" data-open="programa" data-title="Horario" aria-label="Horario" style="--x:67.147%; --y:44.941%"><span class="dot"></span><span class="tag">Horario</span></button>
+      <button class="hotspot" type="button" data-open="artistas" aria-label="Artistas" style="--x:32.373%; --y:63.187%"><span class="dot"></span><span class="tag">Artistas</span></button>
+      <button class="hotspot" type="button" data-open="camping" aria-label="Camping" style="--x:83.344%; --y:78.994%"><span class="dot"></span><span class="tag">Camping</span></button>
     </div>
     <p class="hint" aria-hidden="true">Desliza → para ver más</p>
   </main>
@@ -59,7 +59,7 @@
     <button class="btn" type="button" data-close>Cerrar</button>
   </dialog>
 
-  <dialog id="programa" class="modal" aria-labelledby="programa-t">
+  <dialog id="programa" class="modal" aria-labelledby="programa-t" data-title-default="Programa">
     <h2 id="programa-t">Programa</h2>
     <div class="tabs" role="tablist" aria-label="Días del festival">
       <button class="tab is-active" role="tab" id="tab-0" aria-selected="true" aria-controls="panel" data-day="0" type="button">Viernes 21</button>
@@ -67,6 +67,17 @@
       <button class="tab" role="tab" id="tab-2" aria-selected="false" aria-controls="panel" data-day="2" type="button" tabindex="-1">Domingo 23</button>
     </div>
     <ul id="panel" class="lineup" role="tabpanel" aria-labelledby="tab-0"></ul>
+    <p class="note">Horario por día; las horas están pendientes de confirmación.</p>
+    <button class="btn" type="button" data-close>Cerrar</button>
+  </dialog>
+
+  <dialog id="artistas" class="modal" aria-labelledby="artistas-t">
+    <h2 id="artistas-t">Artistas</h2>
+    <div class="grid-3 artists-by-day">
+      <article class="card"><h3>Viernes 21</h3><ul class="lineup" data-artists-day="0"></ul></article>
+      <article class="card"><h3>Sábado 22</h3><ul class="lineup" data-artists-day="1"></ul></article>
+      <article class="card"><h3>Domingo 23</h3><ul class="lineup" data-artists-day="2"></ul></article>
+    </div>
     <p class="note">Pulsa un artista para ver más información.</p>
     <button class="btn" type="button" data-close>Cerrar</button>
   </dialog>
@@ -105,6 +116,18 @@
     <h2 id="pat-t">Patrocinadores</h2>
     <ul class="sponsors"><li>Patrocinador 1</li><li>Patrocinador 2</li><li>Patrocinador 3</li><li>Patrocinador 4</li></ul>
     <button class="btn" type="button" data-close>Cerrar</button>
+  </dialog>
+
+  <dialog id="camping" class="modal modal--small" aria-labelledby="camping-t">
+    <h2 id="camping-t">Camping</h2>
+    <p>Solicita plazas para la zona de camping durante Riverland Fest. La disponibilidad y las condiciones se confirmarán con la organización.</p>
+    <form id="camping-form" class="form">
+      <div class="field"><label for="camping-nombre">Nombre</label><input id="camping-nombre" name="nombre" type="text" autocomplete="name" required></div>
+      <div class="field"><label for="camping-email">Email</label><input id="camping-email" name="email" type="email" autocomplete="email" required></div>
+      <div class="field"><label for="camping-plazas">Número de plazas</label><input id="camping-plazas" name="plazas" type="number" min="1" max="10" value="1" required></div>
+      <div><button class="btn" type="submit">Solicitar plaza</button> <button class="btn btn-ghost" type="button" data-close>Cerrar</button></div>
+      <p id="camping-status" class="ok" role="status"></p>
+    </form>
   </dialog>
 
   <dialog id="contacto" class="modal" aria-labelledby="contacto-t">
