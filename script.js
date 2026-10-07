@@ -9,7 +9,9 @@ const PROGRAMA = [
 const DIAS = ["viernes 21", "sábado 22", "domingo 23"];
 
 document.addEventListener("DOMContentLoaded", () => {
+  initFooterLayout();
   initMedia();
+  initHotspots();
   initMenu();
   initModales();
   initTabs();
@@ -18,6 +20,16 @@ document.addEventListener("DOMContentLoaded", () => {
   initHint();
   initCoords();
 });
+
+/* Mantiene el área visual ajustada a la altura real del footer responsive */
+function initFooterLayout() {
+  const footer = document.querySelector(".site-footer");
+  const actualizarAltura = () => {
+    document.documentElement.style.setProperty("--footer-h", `${footer.getBoundingClientRect().height}px`);
+  };
+  new ResizeObserver(actualizarAltura).observe(footer);
+  actualizarAltura();
+}
 
 /* Visual: ajusta la proporción del GIF y oculta el fondo si falla */
 function initMedia() {
@@ -33,6 +45,43 @@ function initMedia() {
     el.addEventListener("load", () => fijar(el.naturalWidth, el.naturalHeight));
   }
   el.addEventListener("error", () => stage.classList.add("no-media"));
+}
+
+/* Proyecta las coordenadas de la imagen sobre el recorte visible del video */
+function initHotspots() {
+  const stage = document.getElementById("stage");
+  const media = stage.querySelector(".media img, .media video");
+  const hotspots = [...stage.querySelectorAll(".hotspot")].map(hotspot => ({
+    element: hotspot,
+    x: parseFloat(hotspot.style.getPropertyValue("--x")) / 100,
+    y: parseFloat(hotspot.style.getPropertyValue("--y")) / 100
+  }));
+  const actualizar = () => {
+    const naturalWidth = media.naturalWidth || media.videoWidth;
+    const naturalHeight = media.naturalHeight || media.videoHeight;
+    if (!naturalWidth || !naturalHeight) return;
+
+    const { width, height } = stage.getBoundingClientRect();
+    const scale = Math.max(width / naturalWidth, height / naturalHeight);
+    const renderedWidth = naturalWidth * scale;
+    const renderedHeight = naturalHeight * scale;
+    const positions = getComputedStyle(media).objectPosition.split(" ");
+    const positionX = parseFloat(positions[0]) / 100 || 0.5;
+    const positionY = parseFloat(positions[1]) / 100 || 0.5;
+    const offsetX = (width - renderedWidth) * positionX;
+    const offsetY = (height - renderedHeight) * positionY;
+
+    hotspots.forEach(({ element, x, y }) => {
+      element.style.setProperty("--hotspot-x", `${(offsetX + x * renderedWidth) / width * 100}%`);
+      element.style.setProperty("--hotspot-y", `${(offsetY + y * renderedHeight) / height * 100}%`);
+    });
+  };
+
+  new ResizeObserver(actualizar).observe(stage);
+  media.addEventListener("loadedmetadata", actualizar);
+  media.addEventListener("loadeddata", actualizar);
+  media.addEventListener("load", actualizar);
+  actualizar();
 }
 
 /* Menú desplegable responsive */

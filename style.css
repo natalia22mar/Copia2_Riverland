@@ -21,7 +21,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 body {
   margin: 0;
-  background: #f3f3f3 url('./media/Ilustración_sin_título.jpg') center center / cover no-repeat fixed;
+  background: #f3f3f3;
   color: var(--text);
   font-family: var(--font-body);
   line-height: 1.5;
@@ -66,7 +66,7 @@ h3 { font-size: 1.4rem; }
   background: #f3f3f3;
 }
 .no-media .media { display: none; }
-.hotspot { position: absolute; left: var(--x); top: var(--y); transform: translate(-50%, -50%); display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+.hotspot { position: absolute; left: var(--hotspot-x, var(--x)); top: var(--hotspot-y, var(--y)); transform: translate(-50%, -50%); display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
 .dot { position: relative; display: block; width: 12px; height: 12px; border-radius: 50%; background: var(--lilac); box-shadow: 0 0 7px 2px rgba(201,148,255,.62); transition: transform .2s, box-shadow .2s; }
 .dot::after { position: absolute; top: 50%; left: 50%; width: 42px; height: 42px; border-radius: 50%; background: radial-gradient(circle at 50% 0%, var(--lilac) 0 1.7px, transparent 2.6px), radial-gradient(circle at 85% 15%, var(--lilac-bright) 0 1.6px, transparent 2.5px), radial-gradient(circle at 100% 50%, var(--lilac) 0 1.7px, transparent 2.6px), radial-gradient(circle at 85% 85%, var(--lilac-bright) 0 1.6px, transparent 2.5px), radial-gradient(circle at 50% 100%, var(--lilac) 0 1.7px, transparent 2.6px), radial-gradient(circle at 15% 85%, var(--lilac-bright) 0 1.6px, transparent 2.5px), radial-gradient(circle at 0% 50%, var(--lilac) 0 1.7px, transparent 2.6px), radial-gradient(circle at 15% 15%, var(--lilac-bright) 0 1.6px, transparent 2.5px); content: ""; filter: drop-shadow(0 0 2px rgba(201,148,255,.85)); pointer-events: none; transform: translate(-50%, -50%); animation: sparkle 2.4s ease-in-out infinite alternate; }
 @keyframes sparkle { from { opacity: .55; transform: translate(-50%, -50%) rotate(-12deg) scale(.92); } to { opacity: 1; transform: translate(-50%, -50%) rotate(12deg) scale(1.08); } }
