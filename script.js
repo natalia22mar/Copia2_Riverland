@@ -47,6 +47,7 @@ function initFooterLayout() {
     document.documentElement.style.setProperty("--footer-h", `${footer.getBoundingClientRect().height}px`);
   };
   new ResizeObserver(actualizarAltura).observe(footer);
+  window.addEventListener("resize", actualizarAltura);
   actualizarAltura();
 }
 
