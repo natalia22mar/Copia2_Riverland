@@ -26,18 +26,19 @@
   </header>
 
   <main id="visual" class="scroller">
+    <h1 class="sr-only">Riverland Fest 2026</h1>
     <div class="stage" id="stage">
 
       <div class="media">
-        <video src="./media/Festival_scene_infinite_loop_ani…_20261006192922.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+        <video src="./media/festival-loop.mp4" poster="./media/IMG_2586.PNG" autoplay muted loop playsinline preload="auto"></video>
       </div>
 
-      <!-- ===== HOTSPOTS: --x e --y son el % de la imagen donde se colocan ===== -->
+      <!-- HOTSPOTS posicionados en porcentajes de la imagen -->
       <button class="hotspot" type="button" data-open="entradas" aria-label="Tickets" style="--x:29.786%; --y:23.901%"><span class="dot"></span><span class="tag">Tickets</span></button>
       <button class="hotspot" type="button" data-open="info" aria-label="Info" style="--x:55.777%; --y:23.815%"><span class="dot"></span><span class="tag">Info</span></button>
       <button class="hotspot" type="button" data-open="programa" data-title="Horario" aria-label="Horario" style="--x:67.147%; --y:44.941%"><span class="dot"></span><span class="tag">Horario</span></button>
       <button class="hotspot" type="button" data-open="artistas" aria-label="Artistas" style="--x:32.373%; --y:63.187%"><span class="dot"></span><span class="tag">Artistas</span></button>
-      <button class="hotspot" type="button" data-open="camping" aria-label="Camping" style="--x:83.344%; --y:78.994%"><span class="dot"></span><span class="tag">Camping</span></button>
+      <button class="hotspot hotspot--left" type="button" data-open="camping" aria-label="Camping" style="--x:83.344%; --y:78.994%"><span class="dot"></span><span class="tag">Camping</span></button>
     </div>
     <p class="hint" aria-hidden="true">Desliza → para ver más</p>
   </main>
@@ -56,6 +57,7 @@
     </div>
     <h3 class="sub">Cómo llegar</h3>
     <p class="muted">En coche por la N-634, o en bus hasta Gijón y enlace a Arriondas.</p>
+    <p><a href="https://www.google.com/maps/search/?api=1&query=Valle+de+la+M%C3%BAsica%2C+Arriondas%2C+Asturias" target="_blank" rel="noopener noreferrer">Ver en el mapa</a></p>
     <button class="btn" type="button" data-close>Cerrar</button>
   </dialog>
 
@@ -66,8 +68,8 @@
       <button class="tab" role="tab" id="tab-1" aria-selected="false" aria-controls="panel" data-day="1" type="button" tabindex="-1">Sábado 22</button>
       <button class="tab" role="tab" id="tab-2" aria-selected="false" aria-controls="panel" data-day="2" type="button" tabindex="-1">Domingo 23</button>
     </div>
-    <ul id="panel" class="lineup" role="tabpanel" aria-labelledby="tab-0"></ul>
-    <p class="note">Horario por día; las horas están pendientes de confirmación.</p>
+    <div id="panel" role="tabpanel" aria-labelledby="tab-0"><ul class="lineup"></ul></div>
+    <p class="note">Horarios y escenarios provisionales, sujetos a confirmación.</p>
     <button class="btn" type="button" data-close>Cerrar</button>
   </dialog>
 
@@ -130,7 +132,7 @@
 
   <dialog id="patrocinadores" class="modal" aria-labelledby="pat-t">
     <h2 id="pat-t">Patrocinadores</h2>
-    <ul class="sponsors"><li>Patrocinador 1</li><li>Patrocinador 2</li><li>Patrocinador 3</li><li>Patrocinador 4</li></ul>
+    <ul class="sponsors"><li>Sidra Llagar del Valle</li><li>Cervezas Costa Norte</li><li>AsturBus</li><li>Sonora Records</li></ul>
     <button class="btn" type="button" data-close>Cerrar</button>
   </dialog>
 
@@ -162,7 +164,7 @@
   </dialog>
 
   <dialog id="artista" class="modal modal--small" aria-labelledby="artista-t">
-    <h2 id="artista-t"></h2>
+    <h2 id="artista-t">Artista</h2>
     <p id="artista-info"></p>
     <button class="btn" type="button" data-close>Cerrar</button>
   </dialog>

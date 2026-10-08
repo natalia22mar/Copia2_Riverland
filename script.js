@@ -1,10 +1,28 @@
 "use strict";
 
-/* Programa: artistas confirmados por día */
+/* Programa: horarios y escenarios provisionales por día */
 const PROGRAMA = [
-  ["Sticky M.A.", "Yung Beef", "Kaydy Cain", "Khaled", "Soto Asa", "8belial","yyy891", "cybernene", "roomtrash6"],
-  ["El Bugg", "dsm", "superreservao", "Gloosito", "Guxo", "Dlomalo", "Marce", "La Zowi", "Albany", "GlorySixVain"],
-  ["Al Safir", "Hard GZ", "Hoke", "Miranda", "Kinky Bwoy", "Arce", "Jarfaiter", "Ogcale", "Natos y Waor", "Haze"]
+  [
+    ["Sticky M.A.", "18:00", "El Valle"], ["Yung Beef", "19:15", "El Bosque"],
+    ["Kaydy Cain", "20:00", "La Carpa"], ["Khaled", "21:00", "El Valle"],
+    ["Soto Asa", "22:00", "El Bosque"], ["8belial", "23:00", "La Carpa"],
+    ["yyy891", "00:00", "El Valle"], ["cybernene", "02:00", "El Bosque"],
+    ["roomtrash6", "04:00", "La Carpa"]
+  ],
+  [
+    ["El Bugg", "18:00", "El Valle"], ["dsm", "19:00", "El Bosque"],
+    ["superreservao", "20:00", "La Carpa"], ["Gloosito", "21:00", "El Valle"],
+    ["Guxo", "22:00", "El Bosque"], ["Dlomalo", "23:00", "La Carpa"],
+    ["Marce", "00:00", "El Valle"], ["La Zowi", "01:30", "El Bosque"],
+    ["Albany", "03:00", "La Carpa"], ["GlorySixVain", "04:30", "El Valle"]
+  ],
+  [
+    ["Al Safir", "18:00", "El Valle"], ["Hard GZ", "19:15", "El Bosque"],
+    ["Hoke", "20:30", "La Carpa"], ["Miranda", "21:30", "El Valle"],
+    ["Kinky Bwoy", "22:30", "El Bosque"], ["Arce", "23:30", "La Carpa"],
+    ["Jarfaiter", "00:30", "El Valle"], ["Ogcale", "02:00", "El Bosque"],
+    ["Natos y Waor", "03:30", "La Carpa"], ["Haze", "05:00", "El Valle"]
+  ]
 ];
 const DIAS = ["viernes 21", "sábado 22", "domingo 23"];
 
@@ -106,6 +124,13 @@ function initMenu() {
 
 /* Ventanas modales: hotspots, menú y footer */
 function initModales() {
+  document.addEventListener("keydown", e => {
+    if (e.key !== "Escape") return;
+    const abiertas = [...document.querySelectorAll("dialog[open]")];
+    if (!abiertas.length) return;
+    e.preventDefault();
+    abiertas[abiertas.length - 1].close();
+  });
   document.addEventListener("click", e => {
     const abrir = e.target.closest("[data-open]");
     if (abrir) {
@@ -119,50 +144,93 @@ function initModales() {
     }
     const cerrar = e.target.closest("[data-close]");
     if (cerrar) cerrar.closest("dialog").close();
-    else if (e.target.tagName === "DIALOG") e.target.close(); // clic en el fondo
+    else if (e.target instanceof HTMLDialogElement) {
+      const rect = e.target.getBoundingClientRect();
+      if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
+        e.target.close();
+      }
+    }
   });
 }
 
 /* Pestañas del programa + ficha de artista */
 function initTabs() {
   const tabs = [...document.querySelectorAll(".tab")];
-  const lista = document.getElementById("panel");
-  const crearArtista = (nombre, dia) => {
-    const li = document.createElement("li");
+  const panel = document.getElementById("panel");
+  const lista = panel.querySelector(".lineup");
+  const crearBotonArtista = (nombre, dia) => {
     const boton = document.createElement("button");
     boton.type = "button";
     boton.className = "artist";
-    boton.textContent = nombre;
+    boton.dataset.artista = nombre;
     boton.dataset.dia = dia;
+    return boton;
+  };
+  const crearArtista = (nombre, dia) => {
+    const li = document.createElement("li");
+    const boton = crearBotonArtista(nombre, dia);
+    boton.textContent = nombre;
+    li.appendChild(boton);
+    return li;
+  };
+  const crearArtistaProgramado = (artista, dia) => {
+    const li = document.createElement("li");
+    const boton = crearBotonArtista(artista[0], dia);
+    boton.classList.add("artist-programado");
+    const nombre = document.createElement("span");
+    nombre.className = "artist-name";
+    nombre.textContent = artista[0];
+    const hora = document.createElement("span");
+    hora.className = "artist-time";
+    hora.textContent = artista[1];
+    const escenario = document.createElement("span");
+    escenario.className = "artist-stage";
+    escenario.textContent = artista[2];
+    boton.append(nombre, hora, escenario);
     li.appendChild(boton);
     return li;
   };
   const pintar = dia => {
-    lista.innerHTML = "";
-    PROGRAMA[dia].forEach(nombre => {
-      lista.appendChild(crearArtista(nombre, dia));
+    lista.replaceChildren();
+    PROGRAMA[dia].forEach(artista => {
+      lista.appendChild(crearArtistaProgramado(artista, dia));
     });
-    lista.setAttribute("aria-labelledby", "tab-" + dia);
+    panel.setAttribute("aria-labelledby", "tab-" + dia);
   };
   document.querySelectorAll("[data-artists-day]").forEach(list => {
     const dia = Number(list.dataset.artistsDay);
-    PROGRAMA[dia].forEach(nombre => list.appendChild(crearArtista(nombre, dia)));
+    PROGRAMA[dia].forEach(artista => list.appendChild(crearArtista(artista[0], dia)));
   });
-  tabs.forEach(t => t.addEventListener("click", () => {
+  const activar = tab => {
     tabs.forEach(o => {
-      const activa = o === t;
+      const activa = o === tab;
       o.classList.toggle("is-active", activa);
       o.setAttribute("aria-selected", String(activa));
       o.tabIndex = activa ? 0 : -1;
     });
-    pintar(Number(t.dataset.day));
-  }));
+    pintar(Number(tab.dataset.day));
+  };
+  tabs.forEach((tab, indice) => {
+    tab.addEventListener("click", () => activar(tab));
+    tab.addEventListener("keydown", e => {
+      let destino = indice;
+      if (e.key === "ArrowRight") destino = (indice + 1) % tabs.length;
+      else if (e.key === "ArrowLeft") destino = (indice - 1 + tabs.length) % tabs.length;
+      else if (e.key === "Home") destino = 0;
+      else if (e.key === "End") destino = tabs.length - 1;
+      else return;
+      e.preventDefault();
+      tabs[destino].focus();
+      activar(tabs[destino]);
+    });
+  });
   document.addEventListener("click", e => {
     const b = e.target.closest(".artist");
     if (!b) return;
-    document.getElementById("artista-t").textContent = b.textContent;
+    const artista = PROGRAMA[b.dataset.dia].find(item => item[0] === b.dataset.artista);
+    document.getElementById("artista-t").textContent = artista[0];
     document.getElementById("artista-info").textContent =
-      "Actúa el " + DIAS[b.dataset.dia] + " de agosto en Riverland Fest 2026, Valle de la Música (Arriondas).";
+      `Actúa el ${DIAS[b.dataset.dia]} de agosto en Riverland Fest 2026, Valle de la Música (Arriondas).`;
     document.getElementById("artista").showModal(); // segunda modal sobre la de programa
   });
   pintar(0);
@@ -349,6 +417,5 @@ function initCoords() {
     const x = ((e.clientX - r.left) / r.width * 100).toFixed(1);
     const y = ((e.clientY - r.top) / r.height * 100).toFixed(1);
     console.log(`style="--x:${x}%; --y:${y}%"`);
-    alert(`style="--x:${x}%; --y:${y}%"`);
   });
 }
