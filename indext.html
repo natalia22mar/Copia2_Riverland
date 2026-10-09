@@ -30,7 +30,18 @@
     <div class="stage" id="stage">
 
       <div class="media">
-        <video src="./media/festival-loop.mp4" poster="./media/IMG_2586.PNG" autoplay muted loop playsinline preload="auto"></video>
+        <video
+          src="./media/festival-loop.mp4"
+          autoplay
+          muted
+          loop
+          playsinline
+          webkit-playsinline
+          preload="auto"
+          disablepictureinpicture
+          poster="./media/IMG_2586.PNG"
+          aria-label="Video de fondo del festival"
+        ></video>
       </div>
 
       <!-- HOTSPOTS posicionados en porcentajes de la imagen -->
@@ -114,9 +125,9 @@
       <h3>Datos del comprador</h3>
       <div class="field"><label for="buyer-name">Nombre completo</label><input id="buyer-name" name="buyerName" type="text" autocomplete="name" minlength="2" required></div>
       <div class="field"><label for="buyer-email">Email</label><input id="buyer-email" name="buyerEmail" type="email" autocomplete="email" required></div>
-      <p class="note">Pago ficticio para esta demostración. No introduzcas ni se solicitarán datos bancarios; tus datos no se guardan ni se envían.</p>
+      <p class="note">Pago de demostración: no se solicitarán datos bancarios; tus datos no se guardan ni se envían.</p>
       <div class="checkout-actions">
-        <button class="btn" type="submit">Confirmar pago ficticio</button>
+        <button class="btn" type="submit">Confirmar pago</button>
         <button id="checkout-back" class="btn btn-ghost" type="button">Volver al carrito</button>
       </div>
     </form>

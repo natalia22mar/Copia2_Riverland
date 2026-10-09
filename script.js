@@ -58,8 +58,21 @@ function initMedia() {
   if (!el) { stage.classList.add("no-media"); return; }
   const fijar = (w, h) => { if (w && h) document.documentElement.style.setProperty("--ratio", (w / h).toFixed(4)); };
   if (el.tagName === "VIDEO") {
-    el.addEventListener("loadedmetadata", () => fijar(el.videoWidth, el.videoHeight));
+    el.muted = true;
+    el.loop = true;
+    el.controls = false;
+    el.playsInline = true;
+    el.setAttribute("playsinline", "true");
+    el.setAttribute("webkit-playsinline", "true");
+    el.setAttribute("muted", "true");
+    el.setAttribute("loop", "true");
+    el.volume = 0;
+    el.addEventListener("loadedmetadata", () => {
+      fijar(el.videoWidth, el.videoHeight);
+      el.play().catch(() => {});
+    });
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) el.removeAttribute("autoplay");
+    el.addEventListener("canplay", () => el.play().catch(() => {}));
   } else {
     if (el.complete && el.naturalWidth) fijar(el.naturalWidth, el.naturalHeight);
     el.addEventListener("load", () => fijar(el.naturalWidth, el.naturalHeight));
